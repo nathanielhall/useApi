@@ -2,9 +2,15 @@
 
 `useApi` is a React hook used to send async api requests.
 
+Title description (problem/solution)
+
+Install directions
+
+Usage
+
 ## Install
 
-```git
+```sh
 git clone https://github.com/nathanielhall/starter-app-typescript.git
 ```
 
@@ -12,21 +18,19 @@ git clone https://github.com/nathanielhall/starter-app-typescript.git
 
 ### Basic Query Example
 
-```jsx
-import React, { FC } from 'react'
+```javascript
 import { useApi } from './useApi'
 
 type DogApi = {
   message: string
 }
 export const App: FC = () => {
-  const [getDog] = useApi < DogApi > 'breeds/image/random'
-
-  if (getDog.loading) return <h2>Loading</h2>
-  if (getDog.error) return <h2>'Error'</h2>
+  const [getDog] = useApi<DogApi>('breeds/image/random')
 
   return (
     <>
+      {getDog.loading && <h2>Loading...</h2>}
+      {getDog.error && <h2>`ERROR: ${getDog.error.message}`</h2>}
       {getDog.response && <img src={getDog.response.data.message} alt="new" />}
     </>
   )

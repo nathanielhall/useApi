@@ -18,17 +18,6 @@ type UseApi<T = any> = [
 export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  useEffect(() => {
-    if (!url) {
-      return
-    }
-
-    makeRequest(url)
-    return () => {
-      signal.cancel('Api is being canceled')
-    }
-  }, [url])
-
   const makeRequest: (
     url: string,
     body?: any,
@@ -53,6 +42,17 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
       }
     }
   }
+
+  useEffect(() => {
+    if (!url) {
+      return
+    }
+
+    makeRequest(url)
+    return () => {
+      signal.cancel('Api is being canceled')
+    }
+  }, [url])
 
   return [state, makeRequest]
 }

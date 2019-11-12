@@ -1,7 +1,11 @@
 {
-  "name": "starter-app-typescript",
+  "name": "use-api",
   "version": "1.0.0",
-  "description": "React/TypeScript starter app for creating front end applications",
+  "description": "r",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanielhall/useApi.git"
+  },
   "main": "index.js",
   "scripts": {
     "build": "webpack --progress --colors --mode=production",
@@ -11,12 +15,10 @@
     "prettier": "prettier --write \"./**/*.{json,ts,tsx,scss}\""
   },
   "keywords": [
+    "react hook",
+    "useApi",
     "react",
-    "typescript",
-    "webpack",
-    "eslint",
-    "starter",
-    "boilerplate"
+    "typescript"
   ],
   "author": "Nathaniel C. Hall",
   "license": "MIT",
@@ -36,6 +38,7 @@
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^2.2.0",
     "eslint-plugin-unicorn": "^12.1.0",
     "html-webpack-plugin": "^3.2.0",

@@ -6,9 +6,10 @@ export const SUCCESS = '[api] Success'
 export const ERROR = '[api] Error'
 
 export const Actions = {
-  fetching: () => <const>{ type: FETCHING },
-  success: <T>(response: Response<T>) => <const>{ type: SUCCESS, payload: response },
-  error: (error: RequestError) => <const>{ type: ERROR, payload: error }
+  fetching: () => ({ type: FETCHING } as const),
+  success: <T>(response: Response<T>) =>
+    ({ type: SUCCESS, payload: response } as const),
+  error: (error: RequestError) => ({ type: ERROR, payload: error } as const)
 }
 
 export type Actions = ActionUnion<typeof Actions>

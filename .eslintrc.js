@@ -11,10 +11,8 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true // Allows for the parsing of JSX
+      jsx: true
     }
-    // project: './tsconfig.json',
-    // tsconfigRootDir: __dirname
   },
   extends: [
     'eslint:recommended',
@@ -38,7 +36,7 @@ module.exports = {
     'prettier'
   ],
   rules: {
-    // TypeScript-specific Rules
+    '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/explicit-member-accessibility': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-unused-vars': 0,
@@ -50,7 +48,7 @@ module.exports = {
     ],
 
     // ================================================================================
-    // ESLint: Error while loading rule '@typescript-eslint/strict-boolean-expressions': You have used a rule
+    // FIXME: ESLint: Error while loading rule '@typescript-eslint/strict-boolean-expressions': You have used a rule
     // which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project"
     // property for @typescript-eslint/parser. Occurred while linting /Users/nathanielhall/Projects/starter-app/src/modules/app.tsx.
     // Please see the 'ESLint' output channel for details.
@@ -67,31 +65,19 @@ module.exports = {
     // //'@typescript-eslint/strict-boolean-expressions': 1, // Boolean expressions are limited to booleans
     // ================================================================================
 
-    // Rule to control file name case
-    'unicorn/filename-case': [
-      'error',
-      {
-        case: 'pascalCase'
-      }
-    ],
-
-    // Import-specific rules
-    'import/no-default-export': 1, // Prohibit default exports
-    'import/no-duplicates': 1, // Reports if a resolved path is imported more than once.
-
-    // React-specific Rules
-    'react-hooks/rules-of-hooks': 2, // hook rules
-    'react/jsx-closing-bracket-location': 1, // alignment
-    'react/jsx-closing-tag-location': 1, // alignment
-    'react/jsx-wrap-multilines': 1, // alignment
-    'react/jsx-boolean-value': 1, // Enforce boolean attributes notation in JSX
-    'react/no-array-index-key': 1, // array index cannot be used as key
-    'react/prop-types': 0, // not using prop-types
-    'react/jsx-pascal-case': 2, // use pascal case for jsx
-
-    // ESLint rules
+    // 'unicorn/filename-case': [
+    //   'error',
+    //   {
+    //     case: 'pascalCase'
+    //   }
+    // ],
+    'import/no-default-export': 1,
+    'import/no-duplicates': 1,
+    'react-hooks/rules-of-hooks': 2,
+    'react/prop-types': 0,
+    'react/jsx-pascal-case': 2,
     'no-eval': 1,
-    'default-case': 1
+    'no-extra-boolean-cast': 0
 
     // Security
     // @todo

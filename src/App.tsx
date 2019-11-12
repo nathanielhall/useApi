@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState, useRef } from 'react'
 import { useApi } from './useApi'
 
 type DogApi = {
@@ -6,13 +6,27 @@ type DogApi = {
 }
 
 export const App: FC = () => {
-  const [getDog] = useApi<DogApi>('breeds/image/random')
+  const { request, state: response } = useApi<DogApi>()
+  const [dog, setDog] = useState<DogApi>()
+
+  const getDog = async () => {
+    const dog = await request.get('breeds/image/random')
+    if (!response.error) setDog(dog)
+  }
+
+  const isMounted = useRef(false)
+  useEffect(() => {
+    if (isMounted.current) return
+    isMounted.current = true
+
+    getDog()
+  })
 
   return (
     <>
-      {getDog.loading && <h2>Loading...</h2>}
-      {getDog.error && <h2>`ERROR: ${getDog.error.message}`</h2>}
-      {getDog.response && <img src={getDog.response.data.message} alt="new" />}
+      {response.loading && <h2>Loading...</h2>}
+      {response.error && <h2>`ERROR: ${response.error.message}`</h2>}
+      {dog && <img src={dog.message} alt="new" />}
     </>
   )
 }

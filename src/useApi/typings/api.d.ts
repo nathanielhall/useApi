@@ -1,4 +1,11 @@
-export type Method = 'GET' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'POST' | 'PUT' | 'PATCH'
+export type Method =
+  | 'GET'
+  | 'DELETE'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
 
 export type Request<TBody = any> = {
   url?: string

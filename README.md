@@ -15,7 +15,7 @@ type DogApi = { message: string }
 
 const Dog: FC = () => {
   const {
-    response: { loading, error, response }
+    state: { loading, error, response }
   } = useApi<DogApi>('breeds/image/random')
 
   return (

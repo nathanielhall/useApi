@@ -6,15 +6,12 @@
     "removeComments": true,
     "jsx": "react",
     "declaration": false,
-
     "strict": true,
     "noImplicitAny": true,
-
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true

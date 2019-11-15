@@ -5,8 +5,13 @@
 
 ## Usage
 
-### Simple Example
+### Simple Hook Api
+```javascript
+const [request, response] = useApi<DogApi>('breeds/image/random')
+```
 
+
+### Simple Example (State managed in response) 
 
 ```javascript
 import { useApi } from './useApi'
@@ -14,27 +19,62 @@ import { useApi } from './useApi'
 type DogApi = { message: string }
 
 const Dog: FC = () => {
-  const {
-    state: { loading, error, response }
-  } = useApi<DogApi>('breeds/image/random')
-
+  const [{ get, loading, error }, response] = useApi<DogApi>(
+    'breeds/image/random'
+  )
   return (
     <>
-      {loading && <h2>Loading...</h2>}
-      {error && <h2>`ERROR: ${error.message}`</h2>}
-      {response && <img src={response.data.message} alt="dog" />}
+      <button type="button" onClick={() => get('breeds/image/random')}>
+        New Image!
+      </button>
+      <div>
+        {loading && <h2>Loading...</h2>}
+        {error && <h2>{`ERROR: ${error.stack || error.message}`}</h2>}
+        {response && <img src={response.data.message} alt="new" />}
+      </div>
     </>
   )
 }
-
 ```
 
 
-### Managed State
-@todo
+### Manage the state (WIP)
 
+```javascript
+const Dog: FC = () => {
+  const [dog, setDog] = React.useState<DogApi>() // managing state
+  const [request] = useApi<DogApi>()
+
+  React.useEffect(() => {
+    request.get<DogApi>('breeds/image/random').then((response) => {
+      if (response.status === 200) {
+        setDog(dog)
+      }
+    })
+  }, [])
+
+  return (
+    <>
+      <button type="button" onClick={() => request.get('breeds/image/random')}>
+        New Image!
+      </button>
+      <div>
+        {request.loading && <h2>Loading...</h2>}
+        {request.error && (
+          <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
+        )}
+        {dog && <img src={dog.message} alt="new" />}
+      </div>
+    </>
+  )
+}
+```
 
 
 ### Sequenced calls
 
+@todo
+
+
+### Multiple Requests / Chaining
 @todo

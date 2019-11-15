@@ -1,35 +1,35 @@
 import { useReducer, useCallback, useEffect } from 'react'
 
-import { reducer, initialState, ApiState } from './reducer'
+import { reducer, initialState } from './reducer'
 import { Actions } from './actions'
-import { Method, Response } from './typings/api'
+import { Method, Response, RequestError } from './typings/api'
 
 import axios from 'axios'
 const baseURL = 'https://dog.ceo/api'
 const client = axios.create({ baseURL: baseURL, method: 'GET' }) // defaults
 //import { client } from './client'
 
-type RequestData<T = any> = (url: string, body?: any) => Promise<Response<T>>
+type Query = <T>(url: string, body?: any) => Promise<Response<T>>
 
-type ApiRequest<T> = {
-  get: RequestData<T>
-  post: RequestData<T>
-  patch: RequestData<T>
-  put: RequestData<T>
-  delete: RequestData<T>
+type HttpClient = {
+  get: Query
+  post: Query
+  patch: Query
+  put: Query
+  delete: Query
 }
 
-type UseApi<TResponse = any> = {
-  request: ApiRequest<TResponse>
-  state: ApiState<TResponse> // FIXME: rename (request: ApiRequest, response: ApiResponse)
-}
+type UseApi<T> = [
+  HttpClient & { loading: boolean; error: RequestError | undefined },
+  Response<T> | undefined
+]
 
 export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const makeRequest = useCallback(
-    (method: Method): RequestData => {
-      const doRequest = async (url: string, body?: any): Promise<any> => {
+    (method: Method): Query => {
+      const doRequest: Query = async (url, body) => {
         let data: any = {}
 
         dispatch(Actions.fetching())
@@ -50,7 +50,7 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
     [url]
   )
 
-  const request = {
+  const httpClient = {
     get: makeRequest('GET'),
     post: makeRequest('POST'),
     patch: makeRequest('PATCH'),
@@ -67,5 +67,8 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
     get(url)
   }, [url])
 
-  return { request, state }
+  const { loading, error, ...other } = state
+  const { response } = other
+
+  return [{ loading, error, ...httpClient }, response]
 }

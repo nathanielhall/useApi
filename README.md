@@ -11,7 +11,7 @@ const [request, response] = useApi<DogApi>('breeds/image/random')
 ```
 
 
-### Simple Example (State managed in response) 
+### Simple Example (state managed in useApi hook) 
 
 ```javascript
 import { useApi } from './useApi'
@@ -38,7 +38,7 @@ const Dog: FC = () => {
 ```
 
 
-### Manage the state (WIP)
+### Manage the state (wip)
 
 ```javascript
 const Dog: FC = () => {

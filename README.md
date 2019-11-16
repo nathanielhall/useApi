@@ -1,11 +1,6 @@
-# useApi (WIP)
+# useApi 
 
 `useApi` is a React hook used to send async api requests.
-
-
-
-
-
 
 ## Usage
 

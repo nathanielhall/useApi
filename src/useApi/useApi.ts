@@ -11,16 +11,16 @@ const client = axios.create({ baseURL: baseURL, method: 'GET' }) // defaults
 
 type Query = <T>(url: string, body?: any) => Promise<Response<T>>
 
-type HttpClient = {
-  get: Query
-  post: Query
-  patch: Query
-  put: Query
-  delete: Query
-}
-
 type UseApi<T> = [
-  HttpClient & { loading: boolean; error: RequestError | undefined },
+  {
+    get: Query
+    post: Query
+    patch: Query
+    put: Query
+    delete: Query
+    loading: boolean
+    error: RequestError | undefined
+  },
   Response<T> | undefined
 ]
 
@@ -33,11 +33,10 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
         let data: any = {}
 
         dispatch(Actions.fetching())
-
         try {
           const response = await client({ url, data: body, method })
           dispatch(Actions.success(response))
-          data = response.data
+          data = response
         } catch (e) {
           dispatch(Actions.error(e))
         }
@@ -67,6 +66,7 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
     get(url)
   }, [url])
 
+  // FIXME: clean up
   const { loading, error, ...other } = state
   const { response } = other
 

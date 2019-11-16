@@ -15,21 +15,22 @@ const [request, response] = useApi<DogApi>('breeds/image/random')
 
 ```javascript
 import { useApi } from './useApi'
-
 type DogApi = { message: string }
 
 const Dog: FC = () => {
-  const [{ get, loading, error }, response] = useApi<DogApi>(
-    'breeds/image/random'
-  )
+
+  const [request, response] = useApi<DogApi>('breeds/image/random')
+
   return (
     <>
-      <button type="button" onClick={() => get('breeds/image/random')}>
+      <button type="button" onClick={() => request.get('breeds/image/random')}>
         New Image!
       </button>
+      {request.loading && <span>Loading...</span>}
       <div>
-        {loading && <h2>Loading...</h2>}
-        {error && <h2>{`ERROR: ${error.stack || error.message}`}</h2>}
+        {request.error && (
+          <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
+        )}
         {response && <img src={response.data.message} alt="new" />}
       </div>
     </>
@@ -42,24 +43,29 @@ const Dog: FC = () => {
 
 ```javascript
 const Dog: FC = () => {
-  const [dog, setDog] = React.useState<DogApi>() // managing state
+  const [dog, setDog] = React.useState<DogApi>()
+  
   const [request] = useApi<DogApi>()
 
-  React.useEffect(() => {
+  const getRandomDog = async () => {
     request.get<DogApi>('breeds/image/random').then((response) => {
       if (response.status === 200) {
-        setDog(dog)
+        setDog(response.data)
       }
     })
+  }
+
+  React.useEffect(() => {
+    getRandomDog()
   }, [])
 
   return (
     <>
-      <button type="button" onClick={() => request.get('breeds/image/random')}>
+      <button type="button" onClick={getRandomDog}>
         New Image!
       </button>
+      {request.loading && <span>Loading...</span>}
       <div>
-        {request.loading && <h2>Loading...</h2>}
         {request.error && (
           <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
         )}

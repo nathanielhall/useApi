@@ -1,37 +1,27 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import { RequestError, Response, Method } from './typings/api'
+import axios from 'axios'
+import { RequestConfig, Response, RequestError } from './types'
 
-// FIXME: add env variable to hold api port
-// const port =
-//   process.env['NODE_ENV'] === 'development'
-//     ? !!process.env['API_PORT']
-//       ? `:${process.env['API_PORT']}`
-//       : ''
-//     : ''
-// const baseURL = `${document.location.protocol}//${document.location.hostname}${port}`
-
+// FIXME:
 const baseURL = 'https://dog.ceo/api'
-const axiosClient = axios.create({ baseURL: baseURL, method: 'GET' }) // defaults
 
-export const client: <TResponse>(
-  url: string,
-  data?: any,
-  method?: Method
-) => Promise<Response<TResponse>> = async (url, data = {}, method = 'GET') => {
+// Set axios defaults here
+const axiosClient = axios.create({ baseURL, method: 'GET' })
+
+export const client: <TRequestData, TResponseData>(
+  config: RequestConfig<TRequestData>
+) => Promise<Response<TResponseData>> = async (config) => {
   const onSuccess = (response: Response) => {
     console.debug('Success!', response)
-    return response.data
+    return response
   }
 
   const onError = (error: RequestError) => {
     console.error('ERROR', error.config)
-
-    return Promise.reject(error.response || error.message)
+    return Promise.reject(error)
   }
 
   try {
-    const axiosConfig: AxiosRequestConfig = { url, data, method }
-    const response = await axiosClient(axiosConfig)
+    const response = await axiosClient(config)
     return onSuccess(response)
   } catch (error) {
     return onError(error)

@@ -11,6 +11,7 @@
     "build": "webpack --progress --colors --mode=production",
     "start": "webpack-dev-server --config webpack.config.ts --progress --colors --open --mode=development",
     "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "test": "jest",
     "prettier": "prettier --write \"./**/*.{json,ts,tsx,scss}\""
   },

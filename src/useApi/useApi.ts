@@ -1,13 +1,7 @@
 import { useReducer, useCallback, useEffect } from 'react'
-
-import { reducer, initialState } from './reducer'
-import { Actions } from './actions'
-import { Method, Response, RequestError } from './typings/api'
-
-import axios from 'axios'
-const baseURL = 'https://dog.ceo/api'
-const client = axios.create({ baseURL: baseURL, method: 'GET' }) // defaults
-//import { client } from './client'
+import { reducer, initialState, Actions } from './reducer'
+import { Method, Response, RequestError } from './types'
+import { client } from './client'
 
 type Query = <T>(url: string, body?: any) => Promise<Response<T>>
 
@@ -58,17 +52,11 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
   }
 
   useEffect(() => {
-    if (!url) {
-      return
-    }
+    if (!url) return
 
-    const get = makeRequest('GET')
-    get(url)
+    httpClient.get(url)
   }, [url])
 
-  // FIXME: clean up
   const { loading, error, ...other } = state
-  const { response } = other
-
-  return [{ loading, error, ...httpClient }, response]
+  return [{ loading, error, ...httpClient }, other.response]
 }

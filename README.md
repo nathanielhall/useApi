@@ -1,7 +1,7 @@
 # useApi
 
 > `useApi` is a React hook used to send async api requests. 
-> The purpose of this repository is to build the foundation for the useApi hook. Over time features will be added in, until then, the only purpose is to build a **simple foundation**.
+> The purpose of this repository is to build the foundation for the useApi hook. Over time additional features will be added in, until then, the only purpose is to build a **simple foundation** for use in my personal projects.
 
 
 ## Usage
@@ -9,15 +9,15 @@
 
 #### Notes
 + The useApi hook returns an array with the first element as the request and second as the response. 
-+ When a resource url is passed as argument, the hook will execute the request, as _GET_ request, when the component first renders.  
-+ The request functions return ```Promise<Response<T>>``` which can be typed through the useApi or on the api request functions such as ```request.get<SomeType>('some/resourceUrl')```. This typing sets the type on the response data. Currently, the request data (body) is an ```any```. 
++ When a resource url is passed as argument the hook will execute the request as a _GET_ request when the component first renders.  
++ The request functions return `Promise<Response<T>>` which can be typed through the useApi or on the api request functions such as `request.get<SomeType>('some/resourceUrl')`. This typing sets the type on the response data. Currently, the request data (body) is an `any`. 
 
 ```javascript
  const [request, response] = useApi<DogApi>('breeds/image/random')
 ```
 
 
-> The properties of both elements are listed below. Keep in mind, the response is undefined until retrieved. 
+> The properties of both elements are listed below. The response is _undefined_ until retrieved. 
 ```js
 request: {get, delete, patch, post, put, loading, error}
 response: {data, status, statusText}

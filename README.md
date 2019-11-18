@@ -1,15 +1,28 @@
-# useApi 
+# useApi
 
-> `useApi` is a React hook used to send async api requests.
+> `useApi` is a React hook used to send async api requests. 
+> The purpose of this repository is to build the foundation for the useApi hook. Over time features will be added in, until then, the only purpose is to build a **simple foundation**.
+
 
 ## Usage
-> The useApi hook returns an array with the first element as the request and second as the response. 
-> When a resource url is passed as argument, the hook will execute the request, as _GET_ request, when the component first renders.
-> The request returns ```Promise<Response<T>>``` which can be typed through the useApi or on the api request functions ```request.get<User>('api/user')```
+
+
+#### Notes
++ The useApi hook returns an array with the first element as the request and second as the response. 
++ When a resource url is passed as argument, the hook will execute the request, as _GET_ request, when the component first renders.  
++ The request functions return ```Promise<Response<T>>``` which can be typed through the useApi or on the api request functions such as ```request.get<SomeType>('some/resourceUrl')```. This typing sets the type on the response data. Currently, the request data (body) is an ```any```. 
 
 ```javascript
  const [request, response] = useApi<DogApi>('breeds/image/random')
 ```
+
+
+> The properties of both elements are listed below. Keep in mind, the response is undefined until retrieved. 
+```js
+request: {get, delete, patch, post, put, loading, error}
+response: {data, status, statusText}
+```
+
 
 ### Simple example
 > By supplying a url to the hook, a request will be executed when the component renders for the first time.
@@ -31,7 +44,7 @@ const Dog: FC = () => {
 ```
 
 ### How to trigger a request
-> The request object can be used to send requests for _GET, PUT, POST, PATCH, DELETE_.
+> The request object can be used to send api requests.
 
 ```javascript
 export const Dog: FC = () => {
@@ -96,7 +109,10 @@ const [getUserDetails, detailsResp] = useApi<UserDetails>(
 
 ### How to trigger multiple requests that are different
 >
+@todo
 
-```javascript
-
-```
+### Todo Items
++ Ability to abort requests when the component unmounts
++ Add function to ```resend``` the request provided through useApi
++ Review the idea of having a separate function and typing for get requests(queries) and all others (commands)
++ 

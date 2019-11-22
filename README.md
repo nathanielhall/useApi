@@ -1,27 +1,9 @@
 # useApi
 
-> `useApi` is a React hook used to send async api requests. 
-> The purpose of this repository is to build the foundation for the useApi hook. Over time additional features will be added in, until then, the only purpose is to build a **simple foundation** for use in my personal projects.
+> `useApi` is a React hook used to send async api requests. It includes only the basic features. This is a work in progress!
 
 
 ## Usage
-
-
-#### Notes
-+ The useApi hook returns an array with the first element as the request and second as the response. 
-+ When a resource url is passed as argument the hook will execute the request as a _GET_ request when the component first renders.  
-+ The request functions return `Promise<Response<T>>` which can be typed through the useApi or on the api request functions such as `request.get<SomeType>('some/resourceUrl')`. This typing sets the type on the response data. Currently, the request data (body) is an `any`. 
-
-```javascript
- const [request, response] = useApi<DogApi>('breeds/image/random')
-```
-
-
-> The properties of both elements are listed below. The response is _undefined_ until retrieved. 
-```js
-request: {get, delete, patch, post, put, loading, error}
-response: {data, status, statusText}
-```
 
 
 ### Simple example
@@ -107,12 +89,12 @@ const [getUserDetails, detailsResp] = useApi<UserDetails>(
 )
 ```
 
-### How to trigger multiple requests that are different
->
-@todo
+
 
 ### Todo Items
-+ Ability to abort requests when the component unmounts
-+ Add function to ```resend``` the request provided through useApi
-+ Review the idea of having a separate function and typing for get requests(queries) and all others (commands)
-+ 
+- [ ] Ability to abort requests when the component unmounts
+- [ ] Add function to ```resend``` the request provided through useApi
+- [ ] Review the idea of having a separate function and typing for get requests(queries) and all others (commands)
+- [ ] Ability to specify dependents through the useApi hook and request
+  - `const x = useApi('myurl', [state])`
+- [ ] Ability to specify a baseUrl from the usage

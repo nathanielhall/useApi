@@ -3,16 +3,59 @@ import { useApi } from './useApi'
 
 type DogApi = { message: string; status: string }
 
-export const UnManagedState: FC = () => {
+export const Dogs: FC = () => {
   const [request, response] = useApi<DogApi>('breeds/image/random')
+
+  if (request.loading) return <span>Loading...</span>
+  if (request.error) return <span>{request.error.message}</span>
 
   return (
     <>
-      {request.loading && <span>Loading...</span>}
-      {request.error && <div>Error!</div>}
-      {response && <img src={response.data.message} alt="dog" />}
+      <div>{response && <img src={response.data.message} alt="dog" />}</div>
     </>
   )
+}
+
+export const UnMountExampleApp: FC = () => {
+  const [show, setShow] = useState(true)
+
+  return (
+    <>
+      <button type="button" onClick={() => setShow(!show)}>
+        Toggle
+      </button>
+      <div>{show && <Dogs />}</div>
+    </>
+  )
+}
+
+export const Abort: FC = () => {
+  const [request, response] = useApi<DogApi>('breeds/image/random')
+
+  if (request.error) return <span>ERROR!</span>
+  if (request.loading) {
+    return (
+      <>
+        <div>
+          <button type="button" onClick={() => request.abort()}>
+            Abort Request!!
+          </button>
+        </div>
+        <span>Loading...</span>
+      </>
+    )
+  }
+
+  return response ? (
+    <>
+      <div>
+        <button onClick={() => request.get<DogApi>('breeds/image/random')}>
+          New Dog
+        </button>
+      </div>
+      <img src={response.data.message} alt="dog" />
+    </>
+  ) : null
 }
 
 export const Example3: FC = () => {
@@ -20,8 +63,11 @@ export const Example3: FC = () => {
 
   return (
     <>
+      <button type="button" onClick={() => request.abort()}>
+        Abort
+      </button>
       <button type="button" onClick={() => request.get('breeds/image/random')}>
-        New Image!
+        New
       </button>
       {request.loading && <span>Loading...</span>}
       <div>
@@ -61,7 +107,7 @@ export const ManagedState: FC = () => {
 }
 
 export const ManagedStateWithReload: FC = () => {
-  const [dog, setDog] = useState<DogApi>()
+  const [dog, setDog] = useState<DogApi>({ message: '', status: '' })
   const [request] = useApi<DogApi>()
 
   const getRandomDog = async () => {

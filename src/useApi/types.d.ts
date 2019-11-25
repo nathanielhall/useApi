@@ -4,16 +4,6 @@ interface ActionCreator<A> {
 interface ActionCreatorsMapObject<A = any> {
   [key: string]: ActionCreator<A>
 }
-
-/**
- * Returns union of all action creator types
- * @example
- * const Actions = {
- *    fetching: () => {type: FETCHING},
- *    success: (response) => {type: SUCCESS, payload: response}
- * }
- * export type Actions = ActionUnion<typeof Actions>
- */
 export type ActionUnion<T extends ActionCreatorsMapObject> = ReturnType<
   T[keyof T]
 >
@@ -27,6 +17,15 @@ export type Method =
   | 'PUT'
   | 'PATCH'
 
+interface CancelToken {
+  promise: Promise<Cancel>
+  reason?: Cancel
+  throwIfRequested(): void
+}
+interface Cancel {
+  message: string
+}
+
 export type RequestConfig<TData = any> = {
   url?: string
   method?: Method
@@ -34,6 +33,7 @@ export type RequestConfig<TData = any> = {
   headers?: any
   params?: any
   data?: TData
+  cancelToken?: CancelToken
 }
 
 export type Response<TData = any> = {

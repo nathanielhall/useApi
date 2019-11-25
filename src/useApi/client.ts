@@ -6,6 +6,7 @@ const baseURL = 'https://dog.ceo/api'
 
 // Set axios defaults here
 const axiosClient = axios.create({ baseURL, method: 'GET' })
+export const CancelToken = axios.CancelToken.source()
 
 export const client: <TRequestData, TResponseData>(
   config: RequestConfig<TRequestData>
@@ -16,7 +17,11 @@ export const client: <TRequestData, TResponseData>(
   }
 
   const onError = (error: RequestError) => {
-    console.error('ERROR', error.config)
+    if (axios.isCancel(error)) {
+      console.error('axios cancelled')
+    } else {
+      console.error('ERROR', error.config)
+    }
     return Promise.reject(error)
   }
 

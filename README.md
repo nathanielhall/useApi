@@ -89,10 +89,64 @@ const [getUserDetails, detailsResp] = useApi<UserDetails>(
 )
 ```
 
+### How to abort request
+> When a component is unmounted the request will be cancelled. 
+```js
+export const Dogs: FC = () => {
+  const [request, response] = useApi<DogApi>('breeds/image/random')
+
+  if (request.loading) return <span>Loading...</span>
+  if (request.error) return <span>{request.error.message}</span>
+
+  return (
+    <>
+      <div>{response && <img src={response.data.message} alt="dog" />}</div>
+    </>
+  )
+}
+
+export const Usage: FC = () => {
+  const [show, setShow] = useState(true)
+
+  return (
+    <>
+      <button type="button" onClick={() => setShow(!show)}>
+        Toggle
+      </button>
+      <div>{show && <Dogs />}</div>
+    </>
+  )
+}
+```
+
+> Use `request.abort()` to manually cancel the request
+```js
+export const Dogs: FC = () => {
+  const [request, response] = useApi<DogApi>('breeds/image/random')
+
+  if (request.loading) return <span>Loading...</span>
+  if (request.error) return <span>{request.error.message}</span>
+
+  return (
+    <>
+      <button type="button" onClick={() => request.abort()}>
+        Abort
+      </button>
+      <button type="button" onClick={() => request.get('breeds/image/random')}>
+        New
+      </button>
+      <div>
+        {response && <img src={response.data.message} alt="new" />}
+      </div>
+    </>
+  )
+}
+
+```
 
 
 ### Todo Items
-- [ ] Ability to abort requests when the component unmounts
+- [X] Ability to abort requests when the component unmounts
 - [ ] Add function to ```resend``` the request provided through useApi
 - [ ] Review the idea of having a separate function and typing for get requests(queries) and all others (commands)
 - [ ] Ability to specify dependents through the useApi hook and request

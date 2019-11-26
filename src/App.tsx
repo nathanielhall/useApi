@@ -61,6 +61,9 @@ export const Abort: FC = () => {
 export const Example3: FC = () => {
   const [request, response] = useApi<DogApi>('breeds/image/random')
 
+  if (request.loading) return <span>Loading...</span>
+  if (request.error) return <span>{request.error.message}</span>
+
   return (
     <>
       <button type="button" onClick={() => request.abort()}>
@@ -69,14 +72,7 @@ export const Example3: FC = () => {
       <button type="button" onClick={() => request.get('breeds/image/random')}>
         New
       </button>
-      {request.loading && <span>Loading...</span>}
-      <div>
-        {request.error && (
-          <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
-        )}
-        {response && <img src={response.data.message} alt="new" />}
-        <pre>{JSON.stringify(response, null, 2)}</pre>
-      </div>
+      <div>{response && <img src={response.data.message} alt="new" />}</div>
     </>
   )
 }

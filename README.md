@@ -83,9 +83,9 @@ const Dog: FC = () => {
 > This can be accomplished using a condition such as a ternary. 
 > The request will not be triggered unless the URL is provided
 ```javascript
-const [getUser, userResp] = useApi<User>('users/me')
-const [getUserDetails, detailsResp] = useApi<UserDetails>(
-  userResp ? `users/${userResp.Id}details/` : null
+const [userRequest, userResponse] = useApi<User>('users/me')
+const [detailsRequest, detailsResponse] = useApi<UserDetails>(
+  userResponse ? `users/${userResponse.Id}details/` : null
 )
 ```
 

@@ -1,7 +1,7 @@
-import { useReducer, useCallback, useEffect, useRef } from 'react'
+import { useReducer, useCallback, useEffect } from 'react'
 import { reducer, initialState, Actions } from './reducer'
 import { Method, Response, RequestError } from './types'
-import { client, CancelToken } from './client'
+import { client } from './client'
 
 type Query = <T>(url: string, body?: any) => Promise<Response<T>>
 
@@ -21,7 +21,8 @@ type UseApi<T> = [
 
 export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const mountedRef = useRef(true)
+
+  const { cancel, isCancel } = client.actions
 
   const makeRequest = useCallback(
     (method: Method): Query => {
@@ -30,19 +31,18 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
 
         dispatch(Actions.fetching())
         try {
-          const response = await client({
+          const response = await client.request({
             url,
             data: body, // FIXME: rename body to data for simplicity
-            method,
-            cancelToken: CancelToken.token
+            method
           })
 
-          if (mountedRef.current) {
-            dispatch(Actions.success(response))
-            data = response
-          }
+          dispatch(Actions.success(response))
+          data = response
         } catch (e) {
-          dispatch(Actions.error(e))
+          if (isCancel(e) === false) {
+            dispatch(Actions.error(e))
+          }
         }
 
         return data
@@ -60,12 +60,10 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
     put: makeRequest('PUT'),
     delete: makeRequest('DELETE'),
     abort: () => {
-      mountedRef.current = false
-      CancelToken.cancel('Abort request')
+      cancel()
     }
   }
 
-  // cleanup
   useEffect(() => {
     return () => {
       httpClient.abort()

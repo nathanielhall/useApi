@@ -40,8 +40,8 @@ export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
           dispatch(Actions.success(response))
           data = response
         } catch (e) {
-          if (isCancel(e) === false) {
-            dispatch(Actions.error(e))
+          if (isCancel(e as RequestError) === false) {
+            dispatch(Actions.error(e as RequestError))
           }
         }
 

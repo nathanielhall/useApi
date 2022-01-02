@@ -1,11 +1,8 @@
 import axios from 'axios'
 import { RequestConfig, Response, RequestError } from './types'
 
-// FIXME:
-const baseURL = 'https://dog.ceo/api'
 
-// Set axios defaults here
-const axiosClient = axios.create({ baseURL, method: 'GET' })
+const axiosClient = axios.create({ method: 'GET' })
 let cancelToken = axios.CancelToken.source()
 
 const actions = {
@@ -17,13 +14,11 @@ const request: <T = any>(
   config: RequestConfig
 ) => Promise<Response<T>> = async (config) => {
   const onSuccess = (response: Response) => {
-    console.debug('Success!', response)
     return response
   }
 
   const onError = (error: RequestError) => {
     if (axios.isCancel(error)) {
-      // reset cancel token
       cancelToken = axios.CancelToken.source()
     }
 
@@ -38,7 +33,7 @@ const request: <T = any>(
     })
     return onSuccess(response)
   } catch (error) {
-    return onError(error)
+    return onError(error as RequestError)
   }
 }
 

@@ -1,10 +1,13 @@
 {
-  "name": "use-api",
+  "name": "@nathanielhall/useapi",
   "version": "1.0.0",
   "description": "r",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanielhall/useApi.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "main": "index.js",
   "scripts": {

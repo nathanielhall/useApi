@@ -1,7 +1,7 @@
 {
   "name": "@nathanielhall/useapi",
-  "version": "1.0.0",
-  "description": "r",
+  "version": "1.0.1",
+  "description": "useApi hook",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanielhall/useApi.git"

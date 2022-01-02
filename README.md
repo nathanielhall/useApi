@@ -145,10 +145,8 @@ export const Dogs: FC = () => {
 ```
 
 
-### Todo Items
-- [X] Ability to abort requests when the component unmounts
-- [ ] Add function to ```resend``` the request provided through useApi
-- [ ] Review the idea of having a separate function and typing for get requests(queries) and all others (commands)
-- [ ] Ability to specify dependents through the useApi hook and request
-  - `const x = useApi('myurl', [state])`
-- [ ] Ability to specify a baseUrl from the usage
+### Future Changes
+- Add function to ```resend``` the request provided through useApi
+- Ability to specify dependents through the useApi hook and request
+  - `const x = useApi('myurl', [deps])`
+- Ability to specify a baseUrl from the usage or configuration

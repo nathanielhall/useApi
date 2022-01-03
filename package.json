@@ -1,6 +1,6 @@
 {
   "name": "@nathanielhall/useapi",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "useApi hook",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "build": "webpack --progress --mode=production",
     "lint": "eslint . --ext .ts,.tsx",

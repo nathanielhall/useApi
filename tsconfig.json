@@ -5,7 +5,6 @@
     "module": "commonjs",
     "removeComments": true,
     "jsx": "react",
-    "declaration": false,
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
@@ -14,8 +13,13 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "types/useApi.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

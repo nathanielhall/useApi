@@ -1,6 +1,6 @@
 import { useReducer, useCallback, useEffect } from 'react'
 import { reducer, initialState, Actions } from './reducer'
-import { Method, Response, RequestError } from './types'
+import { Method, Response, RequestError } from './types' 
 import { client } from './client'
 
 type Query = <T>(url: string, body?: any) => Promise<Response<T>>

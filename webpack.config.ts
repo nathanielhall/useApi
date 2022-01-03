@@ -7,12 +7,16 @@ const config: Configuration = {
   entry: APP_PATH,
 
   output: {
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'index.js'
   },
 
   devtool: 'source-map',
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      src: path.resolve(__dirname, './src/')
+    }
   },
 
   module: {

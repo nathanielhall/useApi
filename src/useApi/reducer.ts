@@ -1,5 +1,5 @@
 import { Reducer } from 'react'
-import { ActionUnion, Response, RequestError } from './types'
+import { ActionUnion, Response, RequestError } from './types' 
 
 // Constants
 export const FETCHING = '[api] Fetching'

@@ -2,7 +2,7 @@
   "name": "@nathanielhall/useapi",
   "main": "dist/index.js",
   "types": "dist/types",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "useApi hook",
   "repository": {
     "type": "git",

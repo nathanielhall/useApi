@@ -3,7 +3,7 @@
   "main": "dist/useapi.js",
   "module": "dist/useapi.mjs",
   "typings": "dist/useapi.d.ts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "useApi hook",
   "repository": {
     "type": "git",

@@ -17,9 +17,7 @@
     "paths": {
       "src/*": ["./src/*"]
     },
-    "declaration": true,
-    "declarationDir": "dist/types"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "types/useApi.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }

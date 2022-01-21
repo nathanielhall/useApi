@@ -1,3 +1,5 @@
+import { Client } from './client'
+
 interface ActionCreator<A> {
   (...args: any[]): A
 }
@@ -26,13 +28,13 @@ interface Cancel {
   message: string
 }
 
-export type RequestConfig<TData = any> = {
+export type RequestConfig<PAYLOAD = any> = {
   url?: string
   method?: Method
   baseURL?: string
   headers?: any
   params?: any
-  data?: TData
+  data?: PAYLOAD
   cancelToken?: CancelToken
 }
 
@@ -50,3 +52,36 @@ export type RequestError = Error & {
   response?: Response
   stack?: string
 }
+
+export type Query = <T, D = any>(
+  url?: string,
+  body?: D | undefined,
+  config?: RequestConfig<D>
+) => Promise<void>
+
+export type PromiseProp<T> = (client: Client) => Promise<T>
+
+export type Request = {
+  get: Query
+  post: Query
+  patch: Query
+  put: Query
+  delete: Query
+  makeRequest: (props: any) => Promise<void> // FIXME:
+  loading: boolean
+  error: RequestError | undefined
+  abort: () => void
+}
+
+// conditional type here?
+// export type ApiState<T> = [Request, T | Response<T>]
+
+export type MakeRequestProps<T> = {
+  method?: Method
+  url?: string
+  requestConfig?: RequestConfig
+  promise?: PromiseProp<T>
+}
+// export type MakeRequest = (
+//   props: MakeRequestProps
+// ) => Promise<any | Response<any>>

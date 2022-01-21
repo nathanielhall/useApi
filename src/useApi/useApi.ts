@@ -1,81 +1,111 @@
-import { useReducer, useCallback, useEffect } from 'react'
-import { reducer, initialState, Actions } from './reducer'
-import { Method, Response, RequestError } from './types' 
-import { client } from './client'
+import { useReducer, useEffect } from 'react'
+import { reducer, initialState, Actions, InternalState } from './reducer'
+import {
+  Method,
+  Query,
+  PromiseProp,
+  Response,
+  RequestError,
+  RequestConfig,
+  Request,
+  MakeRequestProps
+} from './types'
+import { Client, client } from './client'
 
-type Query = <T>(url: string, body?: any) => Promise<Response<T>>
-
-type UseApi<T> = [
-  {
-    get: Query
-    post: Query
-    patch: Query
-    put: Query
-    delete: Query
-    loading: boolean
-    error: RequestError | undefined
-    abort: () => void
-  },
-  Response<T> | undefined
-]
-
-export const useApi: <T>(url?: string) => UseApi<T> = (url) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+function useApiBase<RESPONSE, PAYLOAD = any>(): [
+  Request,
+  RESPONSE | undefined
+] {
+  const [state, dispatch] = useReducer<
+    React.Reducer<InternalState<RESPONSE>, Actions>
+  >(reducer, initialState)
 
   const { cancel, isCancel } = client.actions
 
-  const makeRequest = useCallback(
-    (method: Method): Query => {
-      const doRequest: Query = async (url, body) => {
-        let data: any = {}
+  const makeRequest = async ({
+    method = 'GET',
+    url,
+    requestConfig = { url, method },
+    promise = (c: Client) => c.request(requestConfig) // default promise
+  }: MakeRequestProps<RESPONSE | Response<RESPONSE>>) => {
+    dispatch(Actions.fetching())
 
-        dispatch(Actions.fetching())
-        try {
-          const response = await client.request({
-            url,
-            data: body, // FIXME: rename body to data for simplicity
-            method
-          })
-
-          dispatch(Actions.success(response))
-          data = response
-        } catch (e) {
-          if (isCancel(e as RequestError) === false) {
-            dispatch(Actions.error(e as RequestError))
-          }
-        }
-
-        return data
+    try {
+      const response = await promise(client)
+      dispatch(Actions.success(response as Response<RESPONSE>))
+    } catch (e) {
+      if (isCancel(e as RequestError) === false) {
+        dispatch(Actions.error(e as RequestError))
       }
+    }
+  }
 
-      return doRequest
-    },
-    [url]
-  )
+  const getQuery: (method: Method) => Query = (method) => {
+    const query: Query = (url, body, config = { url, data: body }) =>
+      makeRequest({ method: method, ...config })
 
-  const httpClient = {
-    get: makeRequest('GET'),
-    post: makeRequest('POST'),
-    patch: makeRequest('PATCH'),
-    put: makeRequest('PUT'),
-    delete: makeRequest('DELETE'),
+    return query
+  }
+
+  const request: Request = {
+    get: getQuery('GET'),
+    post: getQuery('POST'),
+    patch: getQuery('PATCH'),
+    put: getQuery('PUT'),
+    delete: getQuery('DELETE'),
+    makeRequest,
+    loading: state.loading,
+    error: state.error,
     abort: () => {
       cancel()
     }
   }
 
+  const { response } = state
+  return [request, response]
+}
+
+export function useApiQuery<RESPONSE, PAYLOAD = any>(
+  promise: PromiseProp<RESPONSE>
+): [Request, RESPONSE | undefined] {
+  //
+  const [request, response] = useApiBase<RESPONSE, PAYLOAD>()
+
   useEffect(() => {
     return () => {
-      httpClient.abort()
+      request.abort()
     }
   }, [])
 
+  // Handle Initial Request
   useEffect(() => {
-    if (!url) return
+    if (!promise) return
+    request.makeRequest({ promise })
+  }, [])
 
-    httpClient.get(url)
-  }, [url])
+  return [request, response]
+}
 
-  const { loading, error, ...other } = state
-  return [{ loading, error, ...httpClient }, other.response]
+export function useApi<RESPONSE, PAYLOAD = any>(
+  props: string | RequestConfig<PAYLOAD>
+): [Request, Response<RESPONSE> | undefined] {
+  const [request, response] = useApiBase<Response<RESPONSE>, PAYLOAD>()
+
+  useEffect(() => {
+    return () => {
+      request.abort()
+    }
+  }, [])
+
+  // Handle Initial Request
+  useEffect(() => {
+    if (!props) return
+
+    request.makeRequest({
+      url: typeof props === 'string' ? props : undefined,
+      requestConfig: typeof props === 'string' ? undefined : props
+    })
+  }, [])
+
+  return [request, response]
 }

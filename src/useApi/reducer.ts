@@ -1,5 +1,4 @@
-import { Reducer } from 'react'
-import { ActionUnion, Response, RequestError } from './types' 
+import { ActionUnion, Response, RequestError } from './types'
 
 // Constants
 export const FETCHING = '[api] Fetching'
@@ -17,21 +16,21 @@ export const Actions = {
 export type Actions = ActionUnion<typeof Actions>
 
 // Reducer
-export type ApiState<T> = {
-  response?: Response<T>
+export type InternalState<T> = {
+  response?: T
   loading: boolean
   error?: RequestError
 }
-
+// const initialResponse: Response = { status: 500, statusText: '', data: [] }
 export const initialState = {
   response: undefined,
   loading: false,
   error: undefined
 }
 
-export const reducer: Reducer<ApiState<any>, Actions> = (
-  state = initialState,
-  actions
+export const reducer = (
+  state: InternalState<any> = initialState,
+  actions: Actions
 ) => {
   switch (actions.type) {
     case FETCHING:

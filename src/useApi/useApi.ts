@@ -8,7 +8,7 @@ import {
   RequestError,
   RequestConfig,
   Request,
-  MakeRequestProps
+  MakeRequestProps,
 } from './types'
 import { Client, client } from './client'
 
@@ -26,7 +26,7 @@ function useApiBase<RESPONSE, PAYLOAD = any>(): [
     method = 'GET',
     url,
     requestConfig = { url, method },
-    promise = (c: Client) => c.request(requestConfig) // default promise
+    promise = (c: Client) => c.request(requestConfig), // default promise
   }: MakeRequestProps<RESPONSE | Response<RESPONSE>>) => {
     dispatch(Actions.fetching())
 
@@ -58,7 +58,7 @@ function useApiBase<RESPONSE, PAYLOAD = any>(): [
     error: state.error,
     abort: () => {
       cancel()
-    }
+    },
   }
 
   const { response } = state
@@ -66,7 +66,8 @@ function useApiBase<RESPONSE, PAYLOAD = any>(): [
 }
 
 export function useApiQuery<RESPONSE, PAYLOAD = any>(
-  promise: PromiseProp<RESPONSE>
+  promise: PromiseProp<RESPONSE>,
+  deps: ReadonlyArray<any> = []
 ): [Request, RESPONSE | undefined] {
   //
   const [request, response] = useApiBase<RESPONSE, PAYLOAD>()
@@ -81,13 +82,14 @@ export function useApiQuery<RESPONSE, PAYLOAD = any>(
   useEffect(() => {
     if (!promise) return
     request.makeRequest({ promise })
-  }, [])
+  }, deps)
 
   return [request, response]
 }
 
 export function useApi<RESPONSE, PAYLOAD = any>(
-  props: string | RequestConfig<PAYLOAD>
+  props: string | RequestConfig<PAYLOAD>,
+  deps: ReadonlyArray<any> = []
 ): [Request, Response<RESPONSE> | undefined] {
   const [request, response] = useApiBase<Response<RESPONSE>, PAYLOAD>()
 
@@ -101,11 +103,12 @@ export function useApi<RESPONSE, PAYLOAD = any>(
   useEffect(() => {
     if (!props) return
 
+    // console.log('useApi request')
     request.makeRequest({
       url: typeof props === 'string' ? props : undefined,
-      requestConfig: typeof props === 'string' ? undefined : props
+      requestConfig: typeof props === 'string' ? undefined : props,
     })
-  }, [])
+  }, deps)
 
   return [request, response]
 }

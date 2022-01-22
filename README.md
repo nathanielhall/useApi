@@ -61,6 +61,7 @@ const [detailsRequest, detailsResponse] = useApi<UserDetails>(
 const [request, response] = useApi<User>('users/me', [selectedUser])
 ```
 
+### Abort
 > Use `request.abort()` to manually cancel the request
 ```js
 export const Dogs: FC = () => {
@@ -86,7 +87,7 @@ export const Dogs: FC = () => {
 ```
 
 ## useApiQuery
-> This is very similar to `useApi`. However, it accepts a promise instead of the url or request object.
+> `useApiQuery` provides more control by taking a promise rather than a request object. This allows for the response to be manipulated and stored in state rather thon the exact response data. 
 
 ### Pass a promise using useApiQuery
 > 

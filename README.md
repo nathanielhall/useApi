@@ -1,18 +1,15 @@
 # @nathanielhall/useapi
-> `useApi` is a React hook used to send async api requests.
+> This project contains a set of React hooks to reduce the boilerplate when working with async code. This was created to support my personal projects as a github package. 
 
-
-## Usage
-
+## useApi
 
 ### Simple example
-> By supplying a url to the hook, a request will be executed when the component renders for the first time.
+> 
 ```javascript
-import { useApi } from './useApi'
-type DogApi = { message: string }
+type DogApi = { id: number, name: string }
 
 const Dog: FC = () => {
-  const [request, response] = useApi<DogApi>('breeds/image/random')
+  const [request, response] = useApi<DogApi>('breeds/random', [])
 
   return (
     <>
@@ -24,16 +21,16 @@ const Dog: FC = () => {
 }
 ```
 
-### How to trigger a request
+### Trigger a later request
 > The request object can be used to send api requests.
 
 ```javascript
 export const Dog: FC = () => {
-  const [request, response] = useApi<DogApi>('breeds/image/random')
+  const [request, response] = useApi()
 
   return (
     <>
-      <button type="button" onClick={() => request.get('breeds/image/random')}>
+      <button type="button" onClick={() => request.get<DogApi>('breeds/image/random')}>
         New Image!
       </button>
       {request.loading && <span>Loading...</span>}
@@ -48,37 +45,7 @@ export const Dog: FC = () => {
 }
 ```
 
-### How to maintain state outside useApi
-> Since the request will return a response, you can maintain this state locally (outside the hook). 
-
-```javascript
-const Dog: FC = () => {
-  const [dog, setDog] = useState<DogApi>()
-  const [request] = useApi<DogApi>()
-
-  useEffect(() => {
-    const getRandomDog = async () => {
-      request.get<DogApi>('breeds/image/random').then((response) => {
-        if (response.status === 200) {
-          setDog(response.data)
-        }
-      })
-    }
-
-    getRandomDog()
-  }, [])
-
-  return (
-    <>
-      {request.loading && <span>Loading...</span>}
-      {request.error && <div>Error!</div>}
-      {dog && <img src={dog.message} alt="dog" />}
-    </>
-  )
-}
-```
-
-### How to sequence multiple requests
+### Sequence multiple requests
 > This can be accomplished using a condition such as a ternary. 
 > The request will not be triggered unless the URL is provided
 ```javascript
@@ -88,34 +55,10 @@ const [detailsRequest, detailsResponse] = useApi<UserDetails>(
 )
 ```
 
-### How to abort request
-> When a component is unmounted the request will be cancelled. 
-```js
-export const Dogs: FC = () => {
-  const [request, response] = useApi<DogApi>('breeds/image/random')
-
-  if (request.loading) return <span>Loading...</span>
-  if (request.error) return <span>{request.error.message}</span>
-
-  return (
-    <>
-      <div>{response && <img src={response.data.message} alt="dog" />}</div>
-    </>
-  )
-}
-
-export const Usage: FC = () => {
-  const [show, setShow] = useState(true)
-
-  return (
-    <>
-      <button type="button" onClick={() => setShow(!show)}>
-        Toggle
-      </button>
-      <div>{show && <Dogs />}</div>
-    </>
-  )
-}
+### Trigger a request when state changes
+> Trigger an api request when state changes using dependency array
+```javascript
+const [request, response] = useApi<User>('users/me', [selectedUser])
 ```
 
 > Use `request.abort()` to manually cancel the request
@@ -140,12 +83,50 @@ export const Dogs: FC = () => {
     </>
   )
 }
+```
 
+## useApiQuery
+> This is very similar to `useApi`. However, it accepts a promise instead of the url or request object.
+
+### Pass a promise using useApiQuery
+> 
+```javascript
+  const [request, dogNames] = useApiQuery<DogName[]>((req) =>
+    req.get<DogApi>('breeds/image/random').then((resp) => {
+      return resp.data.map(d => ({name: d.name}))
+    })
+  )
+```
+
+```javascript
+const Dog: FC = () => {
+  const submitForm = (request) => request.post<Dog>({url, data, headers})
+  const [requestToSave, responseFromSave] = useApiState(submitForm)
+
+  return (
+    <>
+      <button type="button" onClick={requestToSave.send()}>
+       Save
+      </button>
+      {(requestDogs.loading || requestToSave.loading) && <span>Loading...</span>}
+      <div>
+        {request.error && (
+          <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
+        )}
+        {response && <img src={response.data.message} alt="new" />}
+      </div>
+    </>
+  )
+}
+
+```
+## ApiConfigurationProvider
+> Apply top level configuration without the need to pass through to every hook
+
+```javascript
+<ApiConfigurationProvider baseURL={baseURL} headers={headers}>
+  ...
+</ApiConfigurationProvider>
 ```
 
 
-### Future Changes
-- Add function to ```resend``` the request provided through useApi
-- Ability to specify dependents through the useApi hook and request
-  - `const x = useApi('myurl', [deps])`
-- Ability to specify a baseUrl from the usage or configuration

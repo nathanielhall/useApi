@@ -6,7 +6,7 @@ let cancelToken = axios.CancelToken.source()
 
 const actions = {
   cancel: () => cancelToken.cancel('cancel request'),
-  isCancel: (error: RequestError) => axios.isCancel(error)
+  isCancel: (error: RequestError) => axios.isCancel(error),
 }
 
 const request: <T = any>(
@@ -28,7 +28,7 @@ const request: <T = any>(
   try {
     const response = await axiosClient({
       ...config,
-      cancelToken: cancelToken.token
+      cancelToken: cancelToken.token,
     })
     return onSuccess(response)
   } catch (error) {
@@ -37,16 +37,22 @@ const request: <T = any>(
   }
 }
 
-export const client = {
-  actions,
-  request,
-  get: <T>(url: string) => request<T>({ url, method: 'GET' }),
-  post: <T>(url: string, data: any) =>
-    request<T>({ url, data, method: 'POST' }),
-  put: <T>(url: string, data: any) => request<T>({ url, data, method: 'PUT' }),
-  delete: <T>(url: string, data: any) =>
-    request<T>({ url, data, method: 'DELETE' }),
-  patch: <T>(url: string, data: any) =>
-    request<T>({ url, data, method: 'PATCH' })
+export const getClient = (baseConfig: RequestConfig) => {
+  const wrapper = <T>(config: RequestConfig) =>
+    request<T>({ ...baseConfig, ...config })
+
+  return {
+    actions,
+    request: wrapper,
+    get: <T>(url: string) => wrapper<T>({ url, method: 'GET' }),
+    post: <T>(url: string, data: any) =>
+      wrapper<T>({ url, data, method: 'POST' }),
+    put: <T>(url: string, data: any) =>
+      wrapper<T>({ url, data, method: 'PUT' }),
+    delete: <T>(url: string, data: any) =>
+      wrapper<T>({ url, data, method: 'DELETE' }),
+    patch: <T>(url: string, data: any) =>
+      wrapper<T>({ url, data, method: 'PATCH' }),
+  }
 }
-export type Client = typeof client
+export type Client = ReturnType<typeof getClient>

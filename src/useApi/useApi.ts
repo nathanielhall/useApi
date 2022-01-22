@@ -10,7 +10,8 @@ import {
   Request,
   MakeRequestProps,
 } from './types'
-import { Client, client } from './client'
+import { Client, getClient } from './client'
+import { useApiConfiguration } from './ApiConfigurationProvider'
 
 function useApiBase<RESPONSE, PAYLOAD = any>(): [
   Request,
@@ -19,7 +20,9 @@ function useApiBase<RESPONSE, PAYLOAD = any>(): [
   const [state, dispatch] = useReducer<
     React.Reducer<InternalState<RESPONSE>, Actions>
   >(reducer, initialState)
+  const baseConfig = useApiConfiguration()
 
+  const client = getClient(baseConfig)
   const { cancel, isCancel } = client.actions
 
   const makeRequest = async ({
@@ -40,6 +43,23 @@ function useApiBase<RESPONSE, PAYLOAD = any>(): [
     }
   }
 
+  // const request: Request = {
+  //   get: (url: string) => makeRequest({ promise: (c: Client) => c.get(url) }),
+  //   post: (url: string, data: any) =>
+  //     makeRequest({ promise: (c: Client) => c.post(url, data) }),
+  //   patch: (url: string, data: any) =>
+  //     makeRequest({ promise: (c: Client) => c.patch(url, data) }),
+  //   put: (url: string, data: any) =>
+  //     makeRequest({ promise: (c: Client) => c.put(url, data) }),
+  //   delete: (url: string, data: any) =>
+  //     makeRequest({ promise: (c: Client) => c.delete(url, data) }),
+  //   makeRequest,
+  //   loading: state.loading,
+  //   error: state.error,
+  //   abort: () => {
+  //     cancel()
+  //   }
+  // }
   const getQuery: (method: Method) => Query = (method) => {
     const query: Query = (url, body, config = { url, data: body }) =>
       makeRequest({ method: method, ...config })

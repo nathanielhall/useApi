@@ -1,5 +1,5 @@
 # @nathanielhall/useapi
-> This project contains a set of React hooks to reduce the boilerplate when working with async code. This was created to support my personal projects as a github package. 
+> This project contains a set of React hooks to reduce the boilerplate when working with async code. This was created to support my personal projects as a github package. This is a work in progress.
 
 ## useApi
 
@@ -99,22 +99,22 @@ export const Dogs: FC = () => {
   )
 ```
 
+### Submit Form
 ```javascript
-const Dog: FC = () => {
-  const submitForm = (request) => request.post<Dog>({url, data, headers})
-  const [requestToSave, responseFromSave] = useApiState(submitForm)
+const MyForm = () => {
+  const [request, response] = useApiQuery()
 
   return (
-    <>
-      <button type="button" onClick={requestToSave.send()}>
+    <form onSubmit={() => request.post<Dog>({url: 'breeds', data: state})}>
+       <input>..
+      <button type="button">
        Save
       </button>
-      {(requestDogs.loading || requestToSave.loading) && <span>Loading...</span>}
+      {(request.loading) && <span>Loading...</span>}
       <div>
         {request.error && (
           <h2>{`ERROR: ${request.error.stack || request.error.message}`}</h2>
         )}
-        {response && <img src={response.data.message} alt="new" />}
       </div>
     </>
   )
